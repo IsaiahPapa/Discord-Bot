@@ -14,6 +14,7 @@ client.on("ready", () => {
 
 client.on("guildMemberAdd", (member) => {
     try {
+        if (config.colors.length <= 0) return;
         let randomColor = config.colors[Math.floor(Math.random() * config.colors.length)];
         console.log(randomColor);
         var role = member.guild.roles.cache.find((role) => role.id === randomColor.id);
@@ -51,6 +52,11 @@ client.on("message", (msg) => {
             fs.writeFileSync("config.json", data);
         }
         if (msg.content.startsWith("!colors list")) {
+            if (config.colors.length <= 0) {
+                msg.reply("No colors assigned");
+                return;
+            }
+
             let stringOfRoles = "";
             config.colors.map((value) => {
                 stringOfRoles += `<@&${value.id}> `;
@@ -60,6 +66,10 @@ client.on("message", (msg) => {
         }
 
         if (msg.content.startsWith("!colors remove")) {
+            if (config.colors.length <= 0) {
+                msg.reply("No colors assigned");
+                return;
+            }
             let found = false;
             config.colors.forEach((configColor, index) => {
                 msg.mentions.roles.forEach((mentionedColor, key) => {
