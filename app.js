@@ -7,19 +7,24 @@ const client = new Discord.Client();
 dotenv.config();
 
 //https://discord.com/oauth2/authorize?client_id=850521147517960222&scope=bot&permissions=268435456
-try {
-    client.on("ready", () => {
-        console.log(`Logged in as ${client.user.tag}!`);
-    });
 
-    client.on("guildMemberAdd", (member) => {
+client.on("ready", () => {
+    console.log(`Logged in as ${client.user.tag}!`);
+});
+
+client.on("guildMemberAdd", (member) => {
+    try {
         let randomColor = config.colors[Math.floor(Math.random() * config.colors.length)];
         console.log(randomColor);
         var role = member.guild.roles.cache.find((role) => role.id === randomColor.id);
         member.roles.add(role);
-    });
+    } catch (e) {
+        console.log(e);
+    }
+});
 
-    client.on("message", (msg) => {
+client.on("message", (msg) => {
+    try {
         if (msg.content.startsWith("!colors add")) {
             let usersToAdd = [];
             console.log("Map size before: " + msg.mentions.roles.size);
@@ -68,16 +73,9 @@ try {
                 if (found) return;
             });
         }
+    } catch (e) {
+        console.log(e);
+    }
+});
 
-        // if (!message.content.startsWith(prefix) || message.author.bot) return;
-
-        // console.log(msg);
-        // if (msg.content === "ping") {
-        //     msg.reply("pong");
-        // }
-    });
-
-    client.login(process.env.TOKEN);
-} catch (e) {
-    console.log(e);
-}
+client.login(process.env.TOKEN);
